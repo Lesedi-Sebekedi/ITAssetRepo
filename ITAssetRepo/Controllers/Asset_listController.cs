@@ -9,9 +9,11 @@ using ITAssetRepo.Data;
 using ITAssetRepo.Models;
 using System.Text;
 using ExcelDataReader;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ITAssetRepo.Controllers
 {
+    [Authorize]
     public class Asset_listController : Controller
     {
         private readonly ApplicationDbContext _context;
