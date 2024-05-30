@@ -6,7 +6,7 @@
 
 
 
-<div class="card w-50 mx-auto">
+<div class="card col-6 mx-auto">
     <h2 class="card-header text-center">@ViewData["Title"]</h2>
     <div class="card-body">
         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post"> 
@@ -36,9 +36,14 @@
                     <li><a class="dropdown-item" href="#">asset_team</a></li>
                 </ul>
             </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-            <hr />
-            <a class="w-100 btn btn-danger" href="/Home/" role="button">Back</a>
+
+            <div class="d-grid gap-2 col-6 mx-auto">
+                <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+                <a class="btn btn-outline-danger" href="/Home/" role="button">Back</a>
+            </div>
+            
+            @* <hr /> *@
+            
         </form>
     </div>
 </div>

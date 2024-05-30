@@ -4,13 +4,24 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h4>Asset List</h4>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Create New</a>
-    <a class="btn btn-primary" href="/Asset_list/UploadExcel" role="button">Upload Excel File</a>
-</p>
-<table class="table">
+<nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+        <div class="d-grid gap-2 d-md-block">
+            <a class="btn btn-primary" asp-action="Create">Create New</a>
+            <a class="btn btn-primary" href="/Asset_list/UploadExcel" role="button">Upload File</a>
+            <a class="btn btn-danger" href="/Home/" role="button">Back</a>
+        </div>
+        
+        <form class="d-flex" role="search">
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-secondary" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+<table class="table table-hover table-striped">
     <thead>
         <tr>
             <th>
@@ -49,7 +60,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Asset_Cost)
             </th>
-            <th></th>
+            <th>Operation</th>
         </tr>
     </thead>
     <tbody>
@@ -100,3 +111,4 @@
 }
     </tbody>
 </table>
+

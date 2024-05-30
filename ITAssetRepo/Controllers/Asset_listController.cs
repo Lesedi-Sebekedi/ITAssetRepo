@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ITAssetRepo.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class Asset_listController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,7 +25,7 @@ namespace ITAssetRepo.Controllers
 
         // GET: Asset_list
         public async Task<IActionResult> Index()
-        {
+            {
             return View(await _context.Asset_list.ToListAsync());
         }
 
