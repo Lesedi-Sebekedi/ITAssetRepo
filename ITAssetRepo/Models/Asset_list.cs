@@ -5,7 +5,7 @@ namespace ITAssetRepo.Models
 {
     public class Asset_list
     {
-        [Key]
+        [Key] 
         [DisplayName("Asset Number")]
         public required string Asset_Number { get; set; }
         public string Description { get; set; }

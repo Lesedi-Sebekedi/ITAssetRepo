@@ -10,6 +10,7 @@ using ITAssetRepo.Models;
 using System.Text;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
+using ITAssetRepo.Data.Pagination;
 
 namespace ITAssetRepo.Controllers
 {
@@ -24,9 +25,13 @@ namespace ITAssetRepo.Controllers
         }
 
         // GET: Asset_list
-        public async Task<IActionResult> Index()
-            {
-            return View(await _context.Asset_list.ToListAsync());
+        public async Task<IActionResult> Index(int? PageNumber)
+        {
+            int pageSize = 5;
+            return View(await PaginatedList<Asset_list>.CreateAsync(_context.Asset_list.AsNoTracking()
+                , PageNumber ?? 1
+                , pageSize));
+            //return View(await _context.Asset_list.ToListAsync());
         }
 
         // GET: Asset_list/Details/5
@@ -58,7 +63,17 @@ namespace ITAssetRepo.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Asset_Number,Description,Catergory,Acq_Date,Location,Label,Custodian,Condition,PO_Number,Model,Serial_Number,Asset_Cost")] Asset_list asset_list)
+        public async Task<IActionResult> Create([Bind("Asset_Number" +
+            ",Description" +
+            ",Catergory,Acq_Date" +
+            ",Location" +
+            ",Label" +
+            ",Custodian" +
+            ",Condition" +
+            ",PO_Number" +
+            ",Model" +
+            ",Serial_Number" +
+            ",Asset_Cost")] Asset_list asset_list)
         {
             if (ModelState.IsValid)
             {
