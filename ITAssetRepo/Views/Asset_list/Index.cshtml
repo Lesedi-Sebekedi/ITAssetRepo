@@ -1,164 +1,178 @@
 ﻿@model IEnumerable<ITAssetRepo.Models.Asset_list>
 
+
 @{
     ViewData["Title"] = "Asset List";
 }
 
-<h4>Asset List</h4>
+    <h3 class="text-center">Asset List</h3>
 
-<nav class="navbar bg-body-tertiary">
-    <div class="container-fluid">
-        <div class="d-grid gap-2 d-md-block">
-            <a class="btn btn-primary" asp-action="Create">Create New</a>
-            <a class="btn btn-primary" href="/Asset_list/UploadExcel" role="button">Upload File</a>
-            <a class="btn btn-danger" href="/Home/" role="button">Back</a>
+    <nav class="navbar ">
+        <div class="container-fluid">
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-primary" asp-action="Create">Create New</a>
+                <a class="btn btn-primary" href="/Asset_list/UploadExcel" role="button">Upload File</a>
+                <a class="btn btn-danger" href="/Home/" role="button">Back</a>
+            </div>
+
+            @* Adding the Asset search field and btn*@
+            <form class="row g-3">
+            <form method="get" asp-action="/Asset_listController/Index">
+                <div class="col-auto">
+                    <input class="form-control" type="text" placeholder="Search for..." name="SearchString" value="@ViewData["CurrentFilter"]"
+                           aria-label="Search" aria-describedby="btnNavbarSearch" />
+                </div>
+                <div class="col-auto">
+                    <input type="submit" value="Search" class="btn btn-primary" />
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-secondary" href="/Asset_list/Index" role="button">Clear</a>
+                </div>
+            </form>
+            </form>
+           
+
+
         </div>
-        
-        <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-secondary" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
+    </nav>
 
-<table class="table table-hover table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Asset_Number)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Catergory)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Acq_Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Label)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Custodian)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PO_Number)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Serial_Number)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Asset_Cost)
-            </th>
-            <th>Operation</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Asset_Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Catergory)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Acq_Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Label)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Custodian)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condition)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PO_Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Serial_Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Asset_Cost)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Asset_Number">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Asset_Number">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Asset_Number">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Asset_Number)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Catergory)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Acq_Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Location)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Label)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Custodian)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Condition)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PO_Number)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Model)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Serial_Number)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Asset_Cost)
+                </th>
+                <th>Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Asset_Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Catergory)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Acq_Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Label)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Custodian)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Condition)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PO_Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Model)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Serial_Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Asset_Cost)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Asset_Number">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Asset_Number">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Asset_Number">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
 
-
-
-@* Pagination buttons *@
-<div class="row">
-    <div class="col-md-6">
-
-    </div>
-    <div class="col-md-6">
-        <nav>
-            <ul class="pagination justify-content-end">
-                <li class="page-item">
-                    <a class="page-link text-black" href="">
-                        <span>First</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-black" href="">
-                        <span>Previous</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-black" href="">
-                       1
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-black" href="">
-                        2
-                    </a>
-                </li>
-                <li class="page-item"> 
-                    <a class="page-link text-black" href="">
-                        3
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-black" href="">
-                        <span>Next</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link text-black" href="">
-                        <span>Last</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    @* Pagination buttons *@
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="col-md-6">
+            <nav>
+                <ul class="pagination justify-content-end">
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            <span>First</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            <span>Previous</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            1
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            2
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            3
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            <span>Next</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link text-black" href="">
+                            <span>Last</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>

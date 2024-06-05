@@ -12,6 +12,7 @@ using ExcelDataReader;
 using Microsoft.AspNetCore.Authorization;
 using ITAssetRepo.Data.Pagination;
 
+
 namespace ITAssetRepo.Controllers
 {
     //[Authorize]
@@ -25,9 +26,21 @@ namespace ITAssetRepo.Controllers
         }
 
         // GET: Asset_list
-        public async Task<IActionResult> Index(int? PageNumber)
+        public async Task<IActionResult> Index(string searchString, int? PageNumber)
         {
-            int pageSize = 5;
+            ViewData["CurrentFilter"] = searchString;
+
+            var AssetList = from a in _context.Asset_list select a;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                AssetList = AssetList.Where(a => a.Asset_Number.Contains(searchString)
+                || a.Custodian.Contains(searchString));
+                return View(AssetList);
+            }
+
+
+                int pageSize = 5;
             return View(await PaginatedList<Asset_list>.CreateAsync(_context.Asset_list.AsNoTracking()
                 , PageNumber ?? 1
                 , pageSize));
