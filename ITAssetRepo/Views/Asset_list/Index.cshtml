@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ITAssetRepo.Models.Asset_list>
+﻿@model PaginatedList<ITAssetRepo.Models.Asset_list>
 
 
 @{
@@ -30,51 +30,26 @@
                 </div>
             </form>
             </form>
-           
-
-
         </div>
     </nav>
 
     <table class="table table-hover table-striped">
         <thead>
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Asset_Number)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Description)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Catergory)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Acq_Date)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Location)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Label)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Custodian)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Condition)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.PO_Number)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Model)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Serial_Number)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Asset_Cost)
-                </th>
+                <th scope="col"><a class="text-dark" asp-controller="Asset_list" asp-action="Index"
+                   asp-route-currentFilter="@ViewData["CurrentFilter"]">Asset_Number</a></th>
+                <th scope="col">Description</th>
+                <th scope="col">Catergory</th>
+                <th scope="col">Acq_Date</th>
+                <th scope="col">Location</th>
+                <th scope="col">Label</th>
+                <th scope="col">Custodian</th>
+                <th scope="col">Condition</th>
+                <th scope="col">PO_Number</th>
+                <th scope="col">Model</th>
+                <th scope="col">Serial_Number</th>
+                <th scope="col">Asset_Cost</th>
+                <th scope="col">Catergory</th>
                 <th>Operation</th>
             </tr>
         </thead>
@@ -82,47 +57,23 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Asset_Number)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Description)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Catergory)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Acq_Date)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Location)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Label)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Custodian)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Condition)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PO_Number)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Model)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Serial_Number)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Asset_Cost)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Asset_Number">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.Asset_Number">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Asset_Number">Delete</a>
-                    </td>
+                   
+                    <td>@item.Asset_Number</td>
+                    <td>@item.Description</td>
+                    <td>@item.Catergory)</td>
+                    <td>@item.Acq_Date</td>
+                    <td>@item.Location </td>
+                    <td>@item.Label</td>
+                    <td>@item.Custodian</td>
+                    <td>@item.Condition</td>
+                    <td>@item.PO_Number</td>
+                    <td>@item.Model</td>
+                    <td>@item.Serial_Number</td>
+                    <td>@item.Asset_Cost</td>
+                    <td><a class="btn btn-dark" asp-action="Edit" asp-route-id="@item.Asset_Number">Edit</a></td>
+                    <td><a class="btn btn-success" asp-action="Details" asp-route-id="@item.Asset_Number">Details</a></td>
+                    <td><a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Asset_Number"
+                        onclick="return confirm('Are you sure you want to delete this Asset')">Delete</a></td>
                 </tr>
             }
         </tbody>
@@ -136,38 +87,35 @@
         <div class="col-md-6">
             <nav>
                 <ul class="pagination justify-content-end">
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
+                <li class="page-item @(Model.PageIndex == 1 ? "disabled" : "")">
+                        <a class="page-link text-black" asp-route-pageNumber="1"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]">
                             <span>First</span>
                         </a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
+                <li class="page-item @(Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.PageIndex-1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]">
                             <span>Previous</span>
                         </a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
-                            1
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
-                            2
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
-                            3
-                        </a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                    <li class="page-item @(Model.PageIndex == i ? "active" : "")">
+                            <a class="page-link text-black" asp-route-pageNumber="@i"
+                           asp-route-currentFilter="@ViewData["CurrentFilter"]">@i</a>
+                        </li>
+                    }
+
+                <li class="page-item @(Model.HasNextPage ? "": "disabled")">
+                        <a class="page-link text-black" asp-route-pageNumber="@(Model.PageIndex+1)"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]">
                             <span>Next</span>
                         </a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link text-black" href="">
+                <li class="page-item" @(Model.PageIndex == Model.TotalPages ? "disabled" : "")>
+                        <a class="page-link text-black" asp-route-pageNumber="@Model.TotalPages"
+                       asp-route-currentFilter="@ViewData["CurrentFilter"]">
                             <span>Last</span>
                         </a>
                     </li>
@@ -175,4 +123,3 @@
             </nav>
         </div>
     </div>
-</div>

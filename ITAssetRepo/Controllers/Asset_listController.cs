@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ITAssetRepo.Data;
 using ITAssetRepo.Models;
 using System.Text;
 using ExcelDataReader;
-using Microsoft.AspNetCore.Authorization;
-using ITAssetRepo.Data.Pagination;
 
 
 namespace ITAssetRepo.Controllers
@@ -26,12 +19,25 @@ namespace ITAssetRepo.Controllers
         }
 
         // GET: Asset_list
-        public async Task<IActionResult> Index(string searchString, int? PageNumber)
+        public async Task<IActionResult> Index(
+            string searchString
+            , string currentFilter
+            , int? PageNumber)
         {
+
+            //Paging
+            if (searchString != null)
+            {
+                PageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            //Searching
             ViewData["CurrentFilter"] = searchString;
-
             var AssetList = from a in _context.Asset_list select a;
-
             if (!String.IsNullOrEmpty(searchString))
             {
                 AssetList = AssetList.Where(a => a.Asset_Number.Contains(searchString)
@@ -39,9 +45,11 @@ namespace ITAssetRepo.Controllers
                 return View(AssetList);
             }
 
-
-                int pageSize = 5;
-            return View(await PaginatedList<Asset_list>.CreateAsync(_context.Asset_list.AsNoTracking()
+            //paging
+            int pageSize = 15;
+            return View(await PaginatedList<Asset_list>.CreateAsync(
+                _context.Asset_list
+                .AsNoTracking()
                 , PageNumber ?? 1
                 , pageSize));
             //return View(await _context.Asset_list.ToListAsync());
@@ -72,21 +80,20 @@ namespace ITAssetRepo.Controllers
         }
 
         // POST: Asset_list/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Asset_Number" +
-            ",Description" +
-            ",Catergory,Acq_Date" +
-            ",Location" +
-            ",Label" +
-            ",Custodian" +
-            ",Condition" +
-            ",PO_Number" +
-            ",Model" +
-            ",Serial_Number" +
-            ",Asset_Cost")] Asset_list asset_list)
+        public async Task<IActionResult> Create([Bind(  "Asset_Number" +
+                                                        ",Description" +
+                                                        ",Catergory,Acq_Date" +
+                                                        ",Location" +
+                                                        ",Label" +
+                                                        ",Custodian" +
+                                                        ",Condition" +
+                                                        ",PO_Number" +
+                                                        ",Model" +
+                                                        ",Serial_Number" +
+                                                        ",Asset_Cost")] 
+                                                Asset_list asset_list)
         {
             if (ModelState.IsValid)
             {
@@ -114,11 +121,21 @@ namespace ITAssetRepo.Controllers
         }
 
         // POST: Asset_list/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Asset_Number,Description,Catergory,Acq_Date,Location,Label,Custodian,Condition,PO_Number,Model,Serial_Number,Asset_Cost")] Asset_list asset_list)
+        public async Task<IActionResult> Edit(string id, [Bind("Asset_Number" +
+                                                               ",Description" +
+                                                               ",Catergory" +
+                                                               ",Acq_Date" +
+                                                               ",Location" +
+                                                               ",Label" +
+                                                               ",Custodian" +
+                                                               ",Condition" +
+                                                               ",PO_Number" +
+                                                               ",Model" +
+                                                               ",Serial_Number" +
+                                                               ",Asset_Cost")] 
+                                                            Asset_list asset_list)
         {
             if (id != asset_list.Asset_Number)
             {
@@ -176,7 +193,6 @@ namespace ITAssetRepo.Controllers
             {
                 _context.Asset_list.Remove(asset_list);
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -196,17 +212,15 @@ namespace ITAssetRepo.Controllers
         public async Task<IActionResult> UploadExcel(IFormFile file)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            if (file != null && file.Length > 0) //check if the file is empty or not
+            if (file != null && file.Length > 0) 
             {
                 var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads";
-
                 if (!Directory.Exists(uploadsFolder))
                 {
                     Directory.CreateDirectory(uploadsFolder);
                 }
 
                 var filepath = Path.Combine(uploadsFolder, file.FileName);
-
                 using (var stream = new FileStream(filepath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
@@ -250,12 +264,10 @@ namespace ITAssetRepo.Controllers
                                 await _context.SaveChangesAsync();
                             }
                         } while (reader.NextResult());
-
                         ViewBag.Message = "Success";
                     }
                 }
             }
-
             else
                 ViewBag.Message = "Empty";
             return View();
