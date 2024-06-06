@@ -4,6 +4,7 @@ using ITAssetRepo.Data;
 using ITAssetRepo.Models;
 using System.Text;
 using ExcelDataReader;
+using NuGet.ContentModel;
 
 
 namespace ITAssetRepo.Controllers
@@ -22,37 +23,41 @@ namespace ITAssetRepo.Controllers
         public async Task<IActionResult> Index(
             string searchString
             , string currentFilter
-            , int? PageNumber)
+            , int? pageNumber)
         {
 
             //Paging
             if (searchString != null)
             {
-                PageNumber = 1;
+                pageNumber = 1;
             }
             else
             {
                 searchString = currentFilter;
             }
 
+            // Ensure pageNumber is valid
+            if (pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
+
             //Searching
             ViewData["CurrentFilter"] = searchString;
-            var AssetList = from a in _context.Asset_list select a;
+            var assets = from a in _context.Asset_list select a;
             if (!String.IsNullOrEmpty(searchString))
             {
-                AssetList = AssetList.Where(a => a.Asset_Number.Contains(searchString)
+                assets = assets.Where(a => a.Asset_Number.Contains(searchString) 
                 || a.Custodian.Contains(searchString));
-                return View(AssetList);
             }
 
             //paging
             int pageSize = 15;
-            return View(await PaginatedList<Asset_list>.CreateAsync(
-                _context.Asset_list
-                .AsNoTracking()
-                , PageNumber ?? 1
-                , pageSize));
-            //return View(await _context.Asset_list.ToListAsync());
+            var paginatedAssets = await PaginatedList<Asset_list>.CreateAsync(
+                assets.AsNoTracking(), 
+                pageNumber ?? 1,
+                pageSize);
+            return View(paginatedAssets);
         }
 
         // GET: Asset_list/Details/5
