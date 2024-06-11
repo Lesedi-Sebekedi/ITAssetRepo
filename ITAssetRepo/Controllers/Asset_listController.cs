@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using ExcelDataReader;
 using ITAssetRepo.Data;
 using ITAssetRepo.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
-using ExcelDataReader;
-using NuGet.ContentModel;
 
 
 namespace ITAssetRepo.Controllers
@@ -47,14 +46,14 @@ namespace ITAssetRepo.Controllers
             var assets = from a in _context.Asset_list select a;
             if (!String.IsNullOrEmpty(searchString))
             {
-                assets = assets.Where(a => a.Asset_Number.Contains(searchString) 
+                assets = assets.Where(a => a.Asset_Number.Contains(searchString)
                 || a.Custodian.Contains(searchString));
             }
 
             //paging
             int pageSize = 15;
             var paginatedAssets = await PaginatedList<Asset_list>.CreateAsync(
-                assets.AsNoTracking(), 
+                assets.AsNoTracking(),
                 pageNumber ?? 1,
                 pageSize);
             return View(paginatedAssets);
@@ -97,7 +96,7 @@ namespace ITAssetRepo.Controllers
                                                         ",PO_Number" +
                                                         ",Model" +
                                                         ",Serial_Number" +
-                                                        ",Asset_Cost")] 
+                                                        ",Asset_Cost")]
                                                 Asset_list asset_list)
         {
             if (ModelState.IsValid)
@@ -139,7 +138,7 @@ namespace ITAssetRepo.Controllers
                                                                ",PO_Number" +
                                                                ",Model" +
                                                                ",Serial_Number" +
-                                                               ",Asset_Cost")] 
+                                                               ",Asset_Cost")]
                                                             Asset_list asset_list)
         {
             if (id != asset_list.Asset_Number)
@@ -217,7 +216,7 @@ namespace ITAssetRepo.Controllers
         public async Task<IActionResult> UploadExcel(IFormFile file)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            if (file != null && file.Length > 0) 
+            if (file != null && file.Length > 0)
             {
                 var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads";
                 if (!Directory.Exists(uploadsFolder))

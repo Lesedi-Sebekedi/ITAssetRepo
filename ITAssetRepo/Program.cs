@@ -18,14 +18,14 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-//Create a scope to obtain a reference to the database context
-using(var scope = app.Services.CreateScope())
+//Seed Roles
+using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    await RoleSeeder.Initializer(services);
 
-    //seed roles
-    await RoleSeeder.SeedRoles(roleManager);
+
+
 }
 
 // Configure the HTTP request pipeline.

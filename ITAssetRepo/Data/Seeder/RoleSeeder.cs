@@ -2,23 +2,21 @@
 
 namespace ITAssetRepo.Data.Seeder
 {
+    //Contains the logic for seeding the initial roles into the database.
     public static class RoleSeeder
     {
-        public static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+        public static async Task Initializer(IServiceProvider serviceProvider)
         {
-            if(!roleManager.Roles.Any())
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            string[] roleNames = { "admin", "technician", "asset_team" };
+            IdentityResult roleResult;
+
+            foreach (var rolename in roleNames)
             {
-                string[] rolenames = { "admin", "technician", "asset_team" };
-                foreach(var rolename in rolenames)
+                var roleExist = await roleManager.RoleExistsAsync(rolename);
+                if (!roleExist)
                 {
-                    if(!await roleManager.RoleExistsAsync(rolename))
-                    {
-                        var roleResult = await roleManager.CreateAsync(new IdentityRole(rolename));
-                        if (!roleResult.Succeeded)
-                        {
-                            throw new Exception($"Failed to create role {rolename}");
-                        }
-                    }
+                    roleResult = await roleManager.CreateAsync(new IdentityRole(rolename));
                 }
             }
         }
