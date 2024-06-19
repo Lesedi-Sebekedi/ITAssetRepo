@@ -2,12 +2,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using ITAssetRepo.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -22,13 +25,16 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -36,6 +42,7 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
         }
 
 
@@ -47,7 +54,7 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-
+        public List<SelectListItem> Roles { get; set; }
         public class InputModel
         {
 
@@ -67,6 +74,10 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
+            
+
+            public string SelectedRole {  get; set; }
+
 
         }
 
@@ -75,6 +86,15 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            Roles = await _roleManager.Roles.Select(x => new SelectListItem
+            {
+                Value = x.Name,
+                Text = x.Name
+            }).ToListAsync();
+            
+
+            
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -91,6 +111,16 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    if(!string.IsNullOrEmpty(Input.SelectedRole))
+                    {
+                        var roleExist = await _roleManager.RoleExistsAsync(Input.SelectedRole);
+
+                        if (roleExist)
+                        {
+                            await _userManager.AddToRoleAsync(user, Input.SelectedRole);
+                        }
+
+                    }
                     _logger.LogInformation("User created a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);

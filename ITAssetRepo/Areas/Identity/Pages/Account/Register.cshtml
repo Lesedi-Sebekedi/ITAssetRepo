@@ -32,11 +32,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="selectRole" class="form-label">Select Role</label>
-                            <select class="form-select" id="selectRole">
-                                <option value="">Choose...</option>
-                                <option value="admin">Admin</option>
-                                <option value="technician">Technician</option>
-                                <option value="asset_team">Asset Team</option>
+                            <select asp-for="Input.SelectedRole" class="form-control">
+                              <option value="">--Select Role</option>
+                              @foreach (var role in Model.Roles)
+                                {
+                                    <option value="@role.Value">@role.Text</option>
+                                }
                             </select>
                         </div>
 

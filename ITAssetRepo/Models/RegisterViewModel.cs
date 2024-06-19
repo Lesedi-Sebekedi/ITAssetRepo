@@ -13,6 +13,6 @@ namespace ITAssetRepo.Models
         public string Password { get; set; }
 
         [Required]
-        public string Role { get; set; }
+        public string Role  { get; set; }
     }
 }
