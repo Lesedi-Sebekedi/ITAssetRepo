@@ -22,5 +22,6 @@ namespace ITAssetRepo.Models
         public string Serial_Number { get; set; }
         [DisplayName("Asset Cost")]
         public string Asset_Cost { get; set; }
+        public bool IsActive { get; set; }
     }
 }

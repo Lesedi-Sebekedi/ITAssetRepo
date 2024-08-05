@@ -142,6 +142,8 @@ namespace ITAssetRepo.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        TempData["SuccessMessage"] = "Successfully registered";
+
                         return LocalRedirect(returnUrl);
                     }
                 }

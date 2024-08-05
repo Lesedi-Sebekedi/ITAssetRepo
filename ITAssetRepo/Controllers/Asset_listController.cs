@@ -9,7 +9,7 @@ using System.Text;
 
 namespace ITAssetRepo.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class Asset_listController : Controller
     {
         private readonly ApplicationDbContext _context;
