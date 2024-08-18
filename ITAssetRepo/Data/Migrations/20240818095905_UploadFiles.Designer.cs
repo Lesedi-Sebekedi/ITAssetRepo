@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITAssetRepo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240818093742_UploadFiles")]
+    [Migration("20240818095905_UploadFiles")]
     partial class UploadFiles
     {
         /// <inheritdoc />
@@ -34,7 +34,7 @@ namespace ITAssetRepo.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Asset_Cost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("BitlockerFilePath")
                         .IsRequired()
@@ -85,7 +85,7 @@ namespace ITAssetRepo.Data.Migrations
 
                     b.HasKey("Asset_Number");
 
-                    b.ToTable("Asset_list");
+                    b.ToTable("Assets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

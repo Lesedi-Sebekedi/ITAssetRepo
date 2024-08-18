@@ -31,7 +31,7 @@ namespace ITAssetRepo.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("Asset_Cost")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("BitlockerFilePath")
                         .IsRequired()
@@ -82,7 +82,7 @@ namespace ITAssetRepo.Data.Migrations
 
                     b.HasKey("Asset_Number");
 
-                    b.ToTable("Asset_list");
+                    b.ToTable("Assets", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

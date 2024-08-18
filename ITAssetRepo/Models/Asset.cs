@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ITAssetRepo.Models
 {
-    public class Asset_list
+    public class Asset
     {
         [Key]
         [DisplayName("Asset Number")]
@@ -12,6 +12,9 @@ namespace ITAssetRepo.Models
         public string Description { get; set; }
         public string Catergory { get; set; }
         [DisplayName("Acquire Date")]
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Acq_Date { get; set; }
 
         public string Location { get; set; }
@@ -23,6 +26,8 @@ namespace ITAssetRepo.Models
         [DisplayName("Serial Number")]
         public string Serial_Number { get; set; }
         [DisplayName("Asset Cost")]
+        [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Asset Cost must be a positive number.")]
         public decimal Asset_Cost { get; set; }
 
         public bool IsActive { get; set; }
