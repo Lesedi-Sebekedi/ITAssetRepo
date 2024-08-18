@@ -9,7 +9,7 @@ using System.Text;
 
 namespace ITAssetRepo.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class Asset_listController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -149,6 +149,19 @@ namespace ITAssetRepo.Controllers
 
             if (ModelState.IsValid)
             {
+                // Handle file upload
+                if (asset_list.BitlockerFile != null)
+                {
+                    var filePath = Path.Combine("wwwroot/files", asset_list.BitlockerFile.FileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await asset_list.BitlockerFile.CopyToAsync(stream);
+                    }
+
+                    // Save the file path to the database
+                    asset_list.BitlockerFilePath = filePath;
+                }
                 try
                 {
                     _context.Update(asset_list);
@@ -253,7 +266,10 @@ namespace ITAssetRepo.Controllers
                                     Asset_Number = reader.GetValue(0).ToString(),
                                     Description = reader.GetValue(1).ToString(),
                                     Catergory = reader.GetValue(2).ToString(),
-                                    Acq_Date = reader.GetValue(3).ToString(),
+
+                                    // Convert the value from the reader to DateTime
+                                    Acq_Date = reader.GetValue(3) != null && DateTime.TryParse(reader.GetValue(3).ToString(), out DateTime acqDate) ? acqDate : DateTime.MinValue,
+
                                     Location = reader.GetValue(4).ToString(),
                                     Label = reader.GetValue(5).ToString(),
                                     Custodian = reader.GetValue(6).ToString(),
@@ -261,8 +277,11 @@ namespace ITAssetRepo.Controllers
                                     PO_Number = reader.GetValue(8).ToString(),
                                     Model = reader.GetValue(9).ToString(),
                                     Serial_Number = reader.GetValue(10).ToString(),
-                                    Asset_Cost = reader.GetValue(11).ToString()
+
+                                    // Convert the value from the reader to decimal
+                                    Asset_Cost = reader.GetValue(11) != null && decimal.TryParse(reader.GetValue(11).ToString(), out decimal assetCost) ? assetCost : 0m
                                 };
+
 
                                 //Save the data in the database
                                 _context.Add(e);

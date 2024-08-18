@@ -4,80 +4,50 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1 class="text-center mb-4">Asset Details</h1>
 
-<div>
+<div class="container">
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Catergory)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Catergory)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Acq_Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Acq_Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Location)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Location)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Label)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Label)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Custodian)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Custodian)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Condition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Condition)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PO_Number)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PO_Number)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Model)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Model)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Serial_Number)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Serial_Number)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Asset_Cost)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Asset_Cost)
-        </dd>
+        @foreach (var property in new[]
+        {
+        new { Name = "Description", Value = Model.Description },
+        new { Name = "Category", Value = Model.Catergory },
+        new { Name = "Acquisition Date", Value = Model.Acq_Date.ToShortDateString() },
+        new { Name = "Location", Value = Model.Location },
+        new { Name = "Label", Value = Model.Label },
+        new { Name = "Custodian", Value = Model.Custodian },
+        new { Name = "Condition", Value = Model.Condition },
+        new { Name = "PO Number", Value = Model.PO_Number },
+        new { Name = "Model", Value = Model.Model },
+        new { Name = "Serial Number", Value = Model.Serial_Number },
+        new { Name = "Asset Cost (ZAR)", Value = Model.Asset_Cost.ToString("C", new System.Globalization.CultureInfo("en-ZA")) }
+        })
+        {
+            <dt class="col-sm-3">@property.Name</dt>
+            <dd class="col-sm-9">@property.Value</dd>
+        }
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Asset_Number">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <!-- Display Uploaded Files -->
+    @if (Model.TechnicalInspectionFile != null)
+    {
+        <div class="mb-3">
+            <strong>Technical Inspection Report:</strong>
+            <a href="@Url.Content(Model.TechnicalInspectionFilePath)" target="_blank">View File</a>
+        </div>
+    }
+
+    @if (Model.BitlockerFile != null)
+    {
+        <div class="mb-3">
+            <strong>BitLocker Encryption Key:</strong>
+            <a href="@Url.Content(Model.BitlockerFilePath)" target="_blank">View File</a>
+        </div>
+    }
+
+    <div class="mt-4 text-center">
+        <a asp-action="Edit" asp-route-id="@Model?.Asset_Number" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>
