@@ -4,6 +4,7 @@ using ITAssetRepo.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,13 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITAssetRepo.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240818095905_UploadFiles")]
+    partial class UploadFiles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -27,18 +30,13 @@ namespace ITAssetRepo.Data.Migrations
                     b.Property<string>("Asset_Number")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Acq_Date")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Acq_Date")
+                        .HasColumnType("datetime2");
 
-<<<<<<< HEAD
                     b.Property<decimal>("Asset_Cost")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("BitlockerFilePath")
-=======
-                    b.Property<string>("Asset_Cost")
->>>>>>> parent of 976e7e1 (partial upload)
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -81,9 +79,13 @@ namespace ITAssetRepo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("TechnicalInspectionFilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Asset_Number");
 
-                    b.ToTable("Assets", (string)null);
+                    b.ToTable("Assets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
