@@ -1,30 +1,26 @@
-﻿@if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "Success")
+﻿@* Display notification messages *@
+@if (!string.IsNullOrEmpty(ViewBag.Message))
 {
-    <div class="alert alert-success" role="alert">
-        All records inserted successfully
+    var alertType = ViewBag.Message == "Success" ? "success" : "warning";
+    var alertMessage = ViewBag.Message == "Success" ? "All records inserted successfully" : "File is empty";
+    <div class="alert alert-@alertType" role="alert">
+        @alertMessage
     </div>
-
 }
 
-else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "Empty")
-{
-    <div class="alert alert-warning" role="alert">
-        File is empty
-    </div>
-}
-<form method="post" enctype="multipart/form-data">
-    <div class="row">
-        <label>Select Excel File</label>
-        <input type="file" name="file" />
-    </div>
+@* File upload form *@
+<form method="post" enctype="multipart/form-data" asp-controller="Asset_list" asp-action="UploadExcel">
+    <div class="container">
+        <div class="row mb-3">
+            <label for="fileUpload" class="form-label">Select Excel File</label>
+            <input type="file" id="fileUpload" name="file" class="form-control" />
+        </div>
 
-    <br />
-
-    <div class="row">
-        <div class="col-3">
-            <input type="submit" asp-controller="Asset_list" asp-action="UploadExcel" class="btn btn-dark" value="Upload Excel File" />
-            <a class="btn btn-primary" href="/Asset_list/Index/" role="button">Back</a>
+        <div class="row">
+            <div class="col text-center">
+                <button type="submit" class="btn btn-dark">Upload Excel File</button>
+                <a class="btn btn-primary ms-2" href="/Asset_list/Index" role="button">Back</a>
+            </div>
         </div>
     </div>
-
 </form>

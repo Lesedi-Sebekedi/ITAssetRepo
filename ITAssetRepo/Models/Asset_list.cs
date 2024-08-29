@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ITAssetRepo.Models
 {
@@ -11,7 +12,11 @@ namespace ITAssetRepo.Models
         public string Description { get; set; }
         public string Catergory { get; set; }
         [DisplayName("Acquire Date")]
-        public string Acq_Date { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
+        public DateTime Acq_Date { get; set; }
+
         public string Location { get; set; }
         public string Label { get; set; }
         public string Custodian { get; set; }
@@ -21,6 +26,18 @@ namespace ITAssetRepo.Models
         [DisplayName("Serial Number")]
         public string Serial_Number { get; set; }
         [DisplayName("Asset Cost")]
-        public string Asset_Cost { get; set; }
+        [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Asset Cost must be a positive number.")]
+        public decimal Asset_Cost { get; set; }
+
+        public bool IsActive { get; set; }
+
+        [NotMapped]
+        public IFormFile TechnicalInspectionFile { get; set; }
+        public string TechnicalInspectionFilePath { get; set; }
+
+        [NotMapped]
+        public IFormFile BitlockerFile { get; set; }
+        public string BitlockerFilePath { get; set; }
     }
 }
