@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Pagination\" />
-    <Folder Include="wwwroot\Uploads\" />
   </ItemGroup>
 
 </Project>

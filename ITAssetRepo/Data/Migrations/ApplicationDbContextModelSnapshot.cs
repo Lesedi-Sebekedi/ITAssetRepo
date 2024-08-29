@@ -31,14 +31,7 @@ namespace ITAssetRepo.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-                    b.Property<decimal>("Asset_Cost")
-                        .HasColumnType("decimal(18, 2)");
-
-                    b.Property<string>("BitlockerFilePath")
-=======
                     b.Property<string>("Asset_Cost")
->>>>>>> parent of 976e7e1 (partial upload)
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -83,7 +76,7 @@ namespace ITAssetRepo.Data.Migrations
 
                     b.HasKey("Asset_Number");
 
-                    b.ToTable("Assets", (string)null);
+                    b.ToTable("Asset_list");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
