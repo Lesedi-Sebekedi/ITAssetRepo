@@ -22,12 +22,11 @@ namespace ITAssetRepo.Controllers
 
         // GET: Asset_list
         public async Task<IActionResult> Index(
-            string searchString
-            , string currentFilter
-            , int? pageNumber)
+            string searchString,
+            string currentFilter,
+            int? pageNumber)
         {
-
-            //Paging
+            // Initialize page number to 1 if search string is provided
             if (searchString != null)
             {
                 pageNumber = 1;
@@ -38,28 +37,38 @@ namespace ITAssetRepo.Controllers
             }
 
             // Ensure pageNumber is valid
-            if (pageNumber < 1)
+            if (pageNumber <= 0)
             {
                 pageNumber = 1;
             }
 
-            //Searching
+            // Store the current filter in ViewData for use in the search form
             ViewData["CurrentFilter"] = searchString;
-            var assets = from a in _context.Asset_list select a;
-            if (!String.IsNullOrEmpty(searchString))
+
+            // Query the database for assets
+            var assetsQuery = _context.Asset_list.AsQueryable();
+
+            // Apply search filters if searchString is not empty
+            if (!string.IsNullOrEmpty(searchString))
             {
-                assets = assets.Where(a => a.Asset_Number.Contains(searchString)
-                || a.Custodian.Contains(searchString));
+                assetsQuery = assetsQuery.Where(a => a.Description.Contains(searchString)
+                                                  || a.Catergory.Contains(searchString)
+                                                  || a.Location.Contains(searchString));
             }
 
-            //paging
+            // Define page size for pagination
             int pageSize = 15;
-            var paginatedAssets = await PaginatedList<Models.Asset_list>.CreateAsync(
-                assets.AsNoTracking(), // Use AsNoTracking without type argument
-                                       pageNumber ?? 1,    pageSize);
 
+            // Retrieve paginated list of assets
+            var paginatedAssets = await PaginatedList<Models.Asset_list>.CreateAsync(
+                assetsQuery.AsNoTracking(), // Avoid tracking for read-only queries
+                pageNumber ?? 1,
+                pageSize);
+
+            // Return the view with the paginated list of assets
             return View(paginatedAssets);
         }
+
 
         // GET: Asset_list/Details/5
         public async Task<IActionResult> Details(string id)
