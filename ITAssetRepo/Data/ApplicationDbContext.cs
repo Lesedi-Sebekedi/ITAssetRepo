@@ -21,6 +21,6 @@ namespace ITAssetRepo.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<Asset_list> Assets { get; set; } = default!;
+        public DbSet<Asset_list> Asset_list { get; set; } = default!;
     }
 }

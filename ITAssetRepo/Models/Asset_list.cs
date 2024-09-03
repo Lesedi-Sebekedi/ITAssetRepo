@@ -11,9 +11,10 @@ namespace ITAssetRepo.Models
         public required string Asset_Number { get; set; }
         public string Description { get; set; }
         public string Catergory { get; set; }
-        [DisplayName("Acquire Date")]
+        
         [Required]
         [DataType(DataType.Date)]
+        [DisplayName("Acquire Date")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Acq_Date { get; set; }
 

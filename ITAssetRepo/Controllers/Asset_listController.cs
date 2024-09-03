@@ -45,7 +45,7 @@ namespace ITAssetRepo.Controllers
 
             //Searching
             ViewData["CurrentFilter"] = searchString;
-            var assets = from a in _context.Assets select a;
+            var assets = from a in _context.Asset_list select a;
             if (!String.IsNullOrEmpty(searchString))
             {
                 assets = assets.Where(a => a.Asset_Number.Contains(searchString)
@@ -69,7 +69,7 @@ namespace ITAssetRepo.Controllers
                 return NotFound();
             }
 
-            var asset_list = await _context.Assets
+            var asset_list = await _context.Asset_list
                 .FirstOrDefaultAsync(m => m.Asset_Number == id);
             if (asset_list == null)
             {
@@ -109,7 +109,7 @@ namespace ITAssetRepo.Controllers
                 return NotFound();
             }
 
-            var asset_list = await _context.Assets.FindAsync(id);
+            var asset_list = await _context.Asset_list.FindAsync(id);
             if (asset_list == null)
             {
                 return NotFound();
@@ -183,7 +183,7 @@ namespace ITAssetRepo.Controllers
                 return NotFound();
             }
 
-            var asset_list = await _context.Assets
+            var asset_list = await _context.Asset_list
                 .FirstOrDefaultAsync(m => m.Asset_Number == id);
             if (asset_list == null)
             {
@@ -196,12 +196,12 @@ namespace ITAssetRepo.Controllers
         // POST: Asset_list/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(string id) 
         {
-            var asset_list = await _context.Assets.FindAsync(id);
+            var asset_list = await _context.Asset_list.FindAsync(id);
             if (asset_list != null)
             {
-                _context.Assets.Remove(asset_list);
+                _context.Asset_list.Remove(asset_list);
             }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -209,7 +209,7 @@ namespace ITAssetRepo.Controllers
 
         private bool Asset_listExists(string id)
         {
-            return _context.Assets.Any(e => e.Asset_Number == id);
+            return _context.Asset_list.Any(e => e.Asset_Number == id);
         }
 
         public IActionResult UploadExcel()
@@ -221,81 +221,98 @@ namespace ITAssetRepo.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadExcel(IFormFile file)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            if (file != null && file.Length > 0)
-            {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
-                if (!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                var filepath = Path.Combine(uploadsFolder, file.FileName);
-
-                try
-                {
-                    using (var stream = new FileStream(filepath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    // Check if file is empty
-                    if (new FileInfo(filepath).Length == 0)
-                    {
-                        ViewBag.Message = "The file is empty.";
-                        return View();
-                    }
-
-                    // Read data from the Excel file
-                    using (var stream = System.IO.File.Open(filepath, FileMode.Open, FileAccess.Read))
-                    {
-                        using (var reader = ExcelReaderFactory.CreateReader(stream))
-                        {
-                            bool isHeaderSkipped = false;
-
-                            while (reader.Read())
-                            {
-                                if (!isHeaderSkipped)
-                                {
-                                    isHeaderSkipped = true;
-                                    continue;
-                                }
-
-                                Models.Asset_list e = new Models.Asset_list
-                                {
-                                    Asset_Number = reader.GetValue(0)?.ToString(),
-                                    Description = reader.GetValue(1)?.ToString(),
-                                    Catergory = reader.GetValue(2)?.ToString(),
-                                    Acq_Date = reader.GetValue(3) != null && DateTime.TryParse(reader.GetValue(3).ToString(), out DateTime acqDate) ? acqDate : DateTime.MinValue,
-                                    Location = reader.GetValue(4)?.ToString(),
-                                    Label = reader.GetValue(5)?.ToString(),
-                                    Custodian = reader.GetValue(6)?.ToString(),
-                                    Condition = reader.GetValue(7)?.ToString(),
-                                    PO_Number = reader.GetValue(8)?.ToString(),
-                                    Model = reader.GetValue(9)?.ToString(),
-                                    Serial_Number = reader.GetValue(10)?.ToString(),
-                                    Asset_Cost = reader.GetValue(11) != null && decimal.TryParse(reader.GetValue(11).ToString(), out decimal assetCost) ? assetCost : 0m
-                                };
-
-                                _context.Add(e);
-                                await _context.SaveChangesAsync();
-                            }
-                        }
-                    }
-
-                    ViewBag.Message = "Success";
-                }
-                catch (Exception ex)
-                {
-                    ViewBag.Message = $"An error occurred: {ex.Message}";
-                }
-            }
-            else
+            // Check if the file is null or empty
+            if (file == null || file.Length == 0)
             {
                 ViewBag.Message = "No file uploaded or file is empty.";
+                return View();
             }
 
+            // Register the encoding provider for Excel files
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            // Define the folder path where the file will be uploaded
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
+
+            // Ensure the directory exists
+            Directory.CreateDirectory(uploadsFolder);
+
+            // Create the full file path for the uploaded file
+            var filePath = Path.Combine(uploadsFolder, Path.GetFileName(file.FileName));
+
+            try
+            {
+                // Save the uploaded file to the specified path
+                await using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Check if the file saved is empty
+                if (new FileInfo(filePath).Length == 0)
+                {
+                    ViewBag.Message = "The file is empty.";
+                    return View();
+                }
+
+                // Open the saved Excel file for reading
+                await using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        bool isHeaderSkipped = false;  // Track whether the header row is skipped
+                        var assetList = new List<Models.Asset_list>();  // List to hold asset records
+
+                        // Read each row in the Excel file
+                        while (reader.Read())
+                        {
+                            // Skip the header row
+                            if (!isHeaderSkipped)
+                            {
+                                isHeaderSkipped = true;
+                                continue;
+                            }
+
+                            // Map the Excel row to an Asset_list object
+                            var asset = new Models.Asset_list
+                            {
+                                Asset_Number = reader.GetValue(0)?.ToString(),
+                                Description = reader.GetValue(1)?.ToString(),
+                                Catergory = reader.GetValue(2)?.ToString(),
+                                Acq_Date = reader.GetValue(3) != null && DateTime.TryParse(reader.GetValue(3).ToString(), out DateTime acqDate) ? acqDate : DateTime.MinValue,
+                                Location = reader.GetValue(4)?.ToString(),
+                                Label = reader.GetValue(5)?.ToString(),
+                                Custodian = reader.GetValue(6)?.ToString(),
+                                Condition = reader.GetValue(7)?.ToString(),
+                                PO_Number = reader.GetValue(8)?.ToString(),
+                                Model = reader.GetValue(9)?.ToString(),
+                                Serial_Number = reader.GetValue(10)?.ToString(),
+                                Asset_Cost = reader.GetValue(11) != null && decimal.TryParse(reader.GetValue(11).ToString(), out decimal assetCost) ? assetCost : 0m
+                            };
+
+                            // Add the asset to the list
+                            assetList.Add(asset);
+                        }
+
+                        // Save all assets to the database in one operation if any assets were read
+                        if (assetList.Any())
+                        {
+                            await _context.AddRangeAsync(assetList);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                }
+
+                // Indicate success
+                ViewBag.Message = "Success";
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors that occurred during file upload or processing
+                ViewBag.Message = $"An error occurred: {ex.Message}";
+            }
+
+            // Return the view with the result message
             return View();
         }
 
