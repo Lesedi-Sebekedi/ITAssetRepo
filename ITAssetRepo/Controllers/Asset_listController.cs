@@ -97,17 +97,17 @@ namespace ITAssetRepo.Controllers
         // POST: Asset_list/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Asset_Number,Description,Category,Acq_Date,Location,Label,Custodian,Condition,PO_Number,Model,Serial_Number,Asset_Cost")]
-                                        NuGet.ContentModel.Asset asset)
+        public async Task<IActionResult> Create([Bind("Asset_Number,Description,Category,Acq_Date,Location,Label,Custodian,Condition,PO_Number,Model,Serial_Number,Asset_Cost")] Asset_list asset_list)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(asset);
+                _context.Add(asset_list);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(asset);
+            return View(asset_list);
         }
+
 
 
         // GET: Asset_list/Edit/5
