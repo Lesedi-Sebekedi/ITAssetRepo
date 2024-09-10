@@ -1,0 +1,32 @@
+﻿/* home.css */
+body {
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.btn-custom {
+    width: 200px;
+    margin: 10px;
+    transition: all 0.3s ease;
+}
+
+    .btn-custom:hover {
+        transform: scale(1.1);
+    }
+
+.container-custom {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #007bff;
+}
